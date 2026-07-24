@@ -1,0 +1,35 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderConsole > snapshot del reporte de consola (sin color) 1`] = `
+"╔════════════════════════════════════════╗
+║   🔎  EL FILTRO — Dependencias          ║
+╚════════════════════════════════════════╝
+
+Carpeta: /x
+Repos escaneados: 6  ·  auditados: 3  ·  sin auditar: 3
+Hallazgos: 7   🔴 3 arréglalo ya   🟡 4 pueden esperar
+
+🔴 ARRÉGLALO YA (3)
+  • repo-a › lodash 1.0.0  (critical)
+      explicación simple
+  • repo-a › minimist 1.0.0  (high)
+      explicación simple
+  • repo-a › request 2.0.0  (abandonado)
+      paquete abandonado
+
+🟡 PUEDEN ESPERAR (4)
+  • repo-a › axios 1.0.0  (moderate)
+  • repo-a › tar 1.0.0  (low)
+  • repo-a › jinja2 2.10  (gravedad desconocida)
+  • repo-a › pyyaml 5.1  (moderate)
+      (2 advisories sin evaluar: la gravedad real podría ser mayor)
+
+Repos sin auditar:
+  • repo-c — falta lockfile y npm sin red
+
+Repos pendientes:
+  • repo-d — pip: motor en Etapa 2
+
+Con dependencias de otro ecosistema (no auditadas en esta versión):
+  • repo-poliglota — también tiene dependencias pip"
+`;

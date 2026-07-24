@@ -1,0 +1,11 @@
+{
+  "name": "node-uuid",
+  "dist-tags": { "latest": "1.4.8" },
+  "versions": {
+    "1.4.8": {
+      "name": "node-uuid",
+      "version": "1.4.8",
+      "deprecated": "Use uuid module instead"
+    }
+  }
+}

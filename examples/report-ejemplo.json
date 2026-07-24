@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "tool": "el-filtro",
+  "generatedAt": "2026-07-24T19:30:14.735Z",
+  "root": "/home/tu-usuario/proyectos",
+  "summary": {
+    "reposScanned": 6,
+    "reposAudited": 3,
+    "reposSkipped": 3,
+    "findings": {
+      "total": 11,
+      "fixNow": 6,
+      "canWait": 5
+    },
+    "bySeverity": {
+      "critical": 3,
+      "high": 2,
+      "moderate": 3,
+      "low": 0,
+      "info": 0
+    },
+    "unknownSeverity": 1,
+    "abandonedPackages": 2
+  },
+  "repos": [
+    {
+      "name": "mi-app-web",
+      "path": "/home/tu-usuario/proyectos/mi-app-web",
+      "ecosystem": "npm",
+      "secondaryEcosystems": [],
+      "status": "audited",
+      "statusReason": null,
+      "findings": [
+        {
+          "type": "vulnerability",
+          "package": "form-data",
+          "installedVersions": [
+            "2.3.3"
+          ],
+          "severity": "critical",
+          "bucket": "fix-now",
+          "direct": false,
+          "fixAvailable": false,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida que se puede explotar directamente — actualízala antes de publicar algo que dependa de ella.",
+          "advisory": {
+            "titles": [
+              "form-data uses unsafe random function in form-data for choosing boundary",
+              "form-data: CRLF injection in form-data via unescaped multipart field names and filenames"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-fjxv-7rqg-78g4",
+              "https://github.com/advisories/GHSA-hmw2-7cc7-3qxx"
+            ],
+            "range": "<=2.5.5"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "lodash",
+          "installedVersions": [
+            "4.17.21"
+          ],
+          "severity": "high",
+          "bucket": "fix-now",
+          "direct": true,
+          "fixAvailable": true,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida que se puede explotar directamente — actualízala antes de publicar algo que dependa de ella.",
+          "advisory": {
+            "titles": [
+              "lodash vulnerable to Code Injection via `_.template` imports key names",
+              "lodash vulnerable to Prototype Pollution via array path bypass in `_.unset` and `_.omit`",
+              "Lodash has Prototype Pollution Vulnerability in `_.unset` and `_.omit` functions"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-r5fr-rjxr-66jc",
+              "https://github.com/advisories/GHSA-f23m-r3pf-42rh",
+              "https://github.com/advisories/GHSA-xxjr-mmjv-4gpg"
+            ],
+            "range": "<=4.17.23"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "qs",
+          "installedVersions": [
+            "6.5.5"
+          ],
+          "severity": "moderate",
+          "bucket": "can-wait",
+          "direct": false,
+          "fixAvailable": false,
+          "explanation": "Esta librería tiene una vulnerabilidad menor o difícil de explotar — conviene actualizarla, pero no es urgente.",
+          "advisory": {
+            "titles": [
+              "qs's arrayLimit bypass in its bracket notation allows DoS via memory exhaustion"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-6rw7-vpxm-498p"
+            ],
+            "range": "<6.14.1"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "request",
+          "installedVersions": [
+            "2.88.2"
+          ],
+          "severity": "critical",
+          "bucket": "fix-now",
+          "direct": true,
+          "fixAvailable": false,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida que se puede explotar directamente — actualízala antes de publicar algo que dependa de ella.",
+          "advisory": {
+            "titles": [
+              "Server-Side Request Forgery in Request"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-p8p7-x288-28g6"
+            ],
+            "range": "*"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "tough-cookie",
+          "installedVersions": [
+            "2.5.0"
+          ],
+          "severity": "moderate",
+          "bucket": "can-wait",
+          "direct": false,
+          "fixAvailable": false,
+          "explanation": "Esta librería tiene una vulnerabilidad menor o difícil de explotar — conviene actualizarla, pero no es urgente.",
+          "advisory": {
+            "titles": [
+              "tough-cookie Prototype Pollution vulnerability"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-72xf-g2v4-qvf3"
+            ],
+            "range": "<4.1.3"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "uuid",
+          "installedVersions": [
+            "3.4.0"
+          ],
+          "severity": "moderate",
+          "bucket": "can-wait",
+          "direct": false,
+          "fixAvailable": false,
+          "explanation": "Esta librería tiene una vulnerabilidad menor o difícil de explotar — conviene actualizarla, pero no es urgente.",
+          "advisory": {
+            "titles": [
+              "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+            ],
+            "range": "<11.1.1"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "deprecated",
+          "package": "request",
+          "installedVersions": [
+            "2.88.2"
+          ],
+          "severity": null,
+          "bucket": "fix-now",
+          "direct": true,
+          "fixAvailable": false,
+          "explanation": "Quien mantiene esta librería la dio por abandonada y no señala reemplazo: ya no recibirá parches de seguridad, así que conviene salir de ella.",
+          "advisory": {
+            "titles": [
+              "request has been deprecated, see https://github.com/request/request/issues/3142"
+            ],
+            "urls": [],
+            "range": ""
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "deprecated",
+          "package": "node-uuid",
+          "installedVersions": [
+            "1.4.8"
+          ],
+          "severity": null,
+          "bucket": "can-wait",
+          "direct": true,
+          "fixAvailable": true,
+          "explanation": "Quien mantiene esta librería la dio por abandonada y señala con qué reemplazarla — cambia cuando puedas, no corre prisa hoy.",
+          "advisory": {
+            "titles": [
+              "Use uuid module instead"
+            ],
+            "urls": [],
+            "range": ""
+          },
+          "unresolvedAdvisories": 0
+        }
+      ]
+    },
+    {
+      "name": "mi-script-python",
+      "path": "/home/tu-usuario/proyectos/mi-script-python",
+      "ecosystem": "pip",
+      "secondaryEcosystems": [],
+      "status": "audited",
+      "statusReason": null,
+      "findings": [
+        {
+          "type": "vulnerability",
+          "package": "jinja2",
+          "installedVersions": [
+            "2.10"
+          ],
+          "severity": "high",
+          "bucket": "fix-now",
+          "direct": true,
+          "fixAvailable": true,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida que se puede explotar directamente — actualízala antes de publicar algo que dependa de ella.",
+          "advisory": {
+            "titles": [
+              "PYSEC-2021-66",
+              "PYSEC-2019-217",
+              "PYSEC-2026-1473",
+              "PYSEC-2026-1471",
+              "PYSEC-2026-1474",
+              "PYSEC-2026-1475"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-g3rq-g295-4j3m",
+              "https://github.com/advisories/GHSA-462w-v97r-4m45",
+              "https://github.com/advisories/GHSA-h5c8-rqwp-cp95",
+              "https://github.com/advisories/GHSA-cpwx-vrp4-4pq7",
+              "https://github.com/advisories/GHSA-h75v-3vvj-5mfj",
+              "https://github.com/advisories/GHSA-q2x7-8rv6-6q7h"
+            ],
+            "range": "< 2.11.3 / 2.10.1 / 3.1.3 / 3.1.6 / 3.1.4 / 3.1.5"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "pyyaml",
+          "installedVersions": [
+            "5.1"
+          ],
+          "severity": "critical",
+          "bucket": "fix-now",
+          "direct": true,
+          "fixAvailable": true,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida que se puede explotar directamente — actualízala antes de publicar algo que dependa de ella.",
+          "advisory": {
+            "titles": [
+              "PYSEC-2020-176",
+              "PYSEC-2020-96",
+              "PYSEC-2021-142"
+            ],
+            "urls": [
+              "https://github.com/advisories/GHSA-3pqx-4fqf-j49f",
+              "https://github.com/advisories/GHSA-fm6c-f59h-7mmg",
+              "https://github.com/advisories/GHSA-6757-jp84-gxfx",
+              "https://github.com/advisories/GHSA-8q59-q68h-6hv4"
+            ],
+            "range": "< 5.2b1 / 5.3.1 / 5.4"
+          },
+          "unresolvedAdvisories": 0
+        },
+        {
+          "type": "vulnerability",
+          "package": "paquete-sin-etiqueta",
+          "installedVersions": [
+            "1.2.0"
+          ],
+          "severity": null,
+          "bucket": "can-wait",
+          "direct": true,
+          "fixAvailable": true,
+          "explanation": "Esta librería tiene una vulnerabilidad conocida, pero no se pudo determinar qué tan grave es — revísala a mano para decidir si corre prisa.",
+          "advisory": {
+            "titles": [
+              "PYSEC-2026-9999"
+            ],
+            "urls": [],
+            "range": "< 1.3.0"
+          },
+          "unresolvedAdvisories": 1
+        }
+      ]
+    },
+    {
+      "name": "repo-sin-lockfile",
+      "path": "/home/tu-usuario/proyectos/repo-sin-lockfile",
+      "ecosystem": "npm",
+      "secondaryEcosystems": [],
+      "status": "no-audit",
+      "statusReason": "no se pudo generar el lockfile (¿sin conexión?). Corre: npm install",
+      "findings": []
+    },
+    {
+      "name": "repo-python-sin-tool",
+      "path": "/home/tu-usuario/proyectos/repo-python-sin-tool",
+      "ecosystem": "pip",
+      "secondaryEcosystems": [],
+      "status": "no-audit",
+      "statusReason": "falta pip-audit. Corre: pip install pip-audit",
+      "findings": []
+    },
+    {
+      "name": "repo-poliglota",
+      "path": "/home/tu-usuario/proyectos/repo-poliglota",
+      "ecosystem": "npm",
+      "secondaryEcosystems": [
+        "pip"
+      ],
+      "status": "audited",
+      "statusReason": null,
+      "findings": []
+    },
+    {
+      "name": "solo-documentos",
+      "path": "/home/tu-usuario/proyectos/solo-documentos",
+      "ecosystem": "none",
+      "secondaryEcosystems": [],
+      "status": "not-applicable",
+      "statusReason": null,
+      "findings": []
+    }
+  ]
+}

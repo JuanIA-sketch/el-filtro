@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.el-filtro/
+*.log
+.env
+.env.*
+*.pem
+*.key

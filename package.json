@@ -1,0 +1,28 @@
+{
+  "name": "el-filtro",
+  "version": "0.1.0",
+  "description": "Escanea de una pasada todos tus repos npm/pip y te dice, en lenguaje simple, qué dependencias arreglar ya y cuáles pueden esperar. 100% determinístico, sin IA ni API key.",
+  "license": "MIT",
+  "author": "Juan Carlos Caro (JuanIA-sketch)",
+  "type": "module",
+  "bin": { "el-filtro": "bin/el-filtro.js" },
+  "files": ["bin", "dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "test": "npm run build && vitest run",
+    "test:watch": "vitest",
+    "dev": "tsx src/cli.ts"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  }
+}
