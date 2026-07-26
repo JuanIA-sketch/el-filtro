@@ -91,6 +91,11 @@ Es el contrato estable que consume **El Repuesto**. `schemaVersion: 1`.
       "bucket": "fix-now",           // fix-now | can-wait — SIEMPRE presente
       "direct": true,
       "fixAvailable": true,
+      "fix": {                       // QUÉ instalar; null si npm no nombró versión
+        "package": "lodash",         // ojo: puede ser OTRO paquete (ver abajo)
+        "version": "4.18.1",
+        "isSemVerMajor": false       // true = el salto puede romper
+      },
       "explanation": "Esta librería tiene una vulnerabilidad conocida...",
       "advisory": { "titles": [...], "urls": [...], "range": "<4.17.21" },
       "unresolvedAdvisories": 0      // advisories sin gravedad resuelta dentro de este hallazgo
@@ -100,6 +105,20 @@ Es el contrato estable que consume **El Repuesto**. `schemaVersion: 1`.
 ```
 
 **Para quien consuma este JSON:** `severity` puede venir en `null` aunque el hallazgo sea una vulnerabilidad (ver limitaciones). `bucket` siempre viene poblado — úsalo como señal principal.
+
+### `fixAvailable` + `fix`: tres estados, no dos
+
+Los dos campos se leen juntos. Colapsarlos pierde información en dos direcciones distintas:
+
+| `fixAvailable` | `fix` | Qué significa |
+|---|---|---|
+| `true` | objeto | Hay que instalar **algo distinto de lo declarado**: npm nombra qué y qué versión. |
+| `true` | `null` | Se arregla **dentro del rango que ya declaras** (`npm update <paquete>`). npm no nombra versión porque no hace falta. Es el arreglo **más barato**, no uno dudoso. |
+| `false` | `null` | No hay versión segura publicada. |
+
+**`fix.package` puede no ser el paquete vulnerable.** En un fallo transitivo npm apunta al padre que hay que subir: `esbuild` vulnerable → `fix.package: "vitest"`. Recomendar el paquete vulnerable ahí mandaría a tocar algo que ni está en el `package.json`.
+
+El campo `fix` es **aditivo** al `schemaVersion: 1` y siempre viene presente (en `null` si no aplica). Su ausencia significa que el reporte lo generó una versión anterior de El Filtro.
 
 📄 **Ejemplo completo:** [`examples/report-ejemplo.json`](examples/report-ejemplo.json) — generado de corridas reales (rutas saneadas). Cubre los tres estados de repo, los dos tipos de hallazgo, un caso de gravedad sin resolver y un repo políglota.
 
@@ -154,6 +173,41 @@ npm install
 npm test          # build + suite completa (TDD, fixtures reales como oráculo)
 npm run test:watch
 ```
+
+### Nota de verificación del campo `fix` (2026-07-26)
+
+El end-to-end que valida los tres estados de `fixAvailable`/`fix` se corrió con la variable
+de entorno `npm_config_registry` apuntando a un proxy local de tránsito, en vez de ir directo
+al registro. Queda escrito para que no haya duda de qué se probó y en qué condiciones.
+
+**Por qué:** en esa fecha, `npm audit` fallaba desde este entorno contra
+`registry.npmjs.org/-/npm/v1/security/advisories/bulk`:
+
+| Cliente | Resultado |
+|---|---|
+| npm 11.8.0 · Node v24.13.1 (Windows 11) | `invalid json response body` — respuesta gzip que el cliente no decodifica |
+| npm 11.4.2 (vía `npx`) | idéntico |
+| npm 9 y npm 10 (vía `npx`) | `400 Bad Request` contra el endpoint legado `/-/npm/v1/security/audits/quick` |
+| npm 10.8.2 · Node v20.20.2 (VPS Ubuntu, **otra red**) | mismo 400; y npm 11 en esa máquina, mismo error de gzip |
+| `curl` con las mismas cabeceras, en ambas redes | **HTTP 200 con JSON correcto en texto plano** |
+
+Descartado que fuera la red (falla igual en dos redes y dos versiones de Node) y que fuera el
+registro (el status oficial reportaba Security Audit operativo, y `curl` obtenía la respuesta
+correcta). El fallo está en la capa HTTP del cliente npm.
+
+**Qué hacía el proxy:** reenviar cada petición a `registry.npmjs.org` pidiendo
+`Accept-Encoding: identity` y devolver la respuesta sin tocarla. No cachea, no altera ni
+sustituye datos — **los advisories siguen viniendo del registro real**. Solo cambia la
+compresión de un salto de transporte.
+
+**Qué NO se tocó:** la variable se exportó únicamente para los procesos de esa corrida.
+No se modificó `.npmrc` ni ninguna configuración de la máquina (`npm config get registry`
+siguió devolviendo `https://registry.npmjs.org/` durante y después).
+
+**Qué se verificó así:** los 24 repos del corpus se auditaron (0 sin auditar) y los tres
+estados aparecieron en datos frescos — 46 hallazgos con `fix` poblado, 11 con `fixAvailable:
+true` y `fix: null` (caso `postcss`), y el resto sin arreglo. Los tests unitarios usan
+fixtures capturados de corridas reales y no dependen del proxy.
 
 ## Licencia
 

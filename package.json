@@ -1,6 +1,6 @@
 {
   "name": "el-filtro",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Escanea de una pasada todos tus repos npm/pip y te dice, en lenguaje simple, qué dependencias arreglar ya y cuáles pueden esperar. 100% determinístico, sin IA ni API key.",
   "license": "MIT",
   "author": "Juan Carlos Caro (JuanIA-sketch)",

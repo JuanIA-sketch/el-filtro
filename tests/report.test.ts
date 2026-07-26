@@ -177,6 +177,17 @@ describe('renderJson', () => {
     expect(parsed.repos[0].secondaryEcosystems).toEqual([]);
     expect(parsed.repos[5].secondaryEcosystems).toEqual(['pip']);
   });
+
+  it('normaliza `fix` a null para que el JSON siempre lo traiga', () => {
+    // Mismo trato que secondaryEcosystems/unresolvedAdvisories: El Repuesto distingue
+    // "campo ausente" (reporte viejo) de "sin versión objetivo" (fix: null). Si el campo
+    // no viniera siempre, esa distinción se pierde.
+    const report = buildReport('/x', repos, FIXED);
+    const parsed = JSON.parse(renderJson(report));
+    const finding = parsed.repos[0].findings[0];
+    expect(finding).toHaveProperty('fix');
+    expect(finding.fix).toBeNull();
+  });
 });
 
 describe('renderConsole', () => {

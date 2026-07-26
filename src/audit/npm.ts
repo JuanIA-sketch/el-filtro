@@ -8,7 +8,7 @@ import {
   type ResolveDeprecation,
 } from './deprecated.js';
 import type { RunCommand } from '../runners/exec.js';
-import type { Finding, Severity } from '../types.js';
+import type { Finding, FixTarget, Severity } from '../types.js';
 
 /**
  * Resultado del motor npm para UN repo. `ok:false` es un fallo controlado (sin red,
@@ -27,6 +27,8 @@ export interface NpmVulnFinding {
   severity: Severity;
   direct: boolean;
   fixAvailable: boolean;
+  /** El objeto de `fixAvailable`, cuando npm lo da; null cuando es booleano puro. */
+  fix: FixTarget | null;
   range: string;
   nodes: string[];
   titles: string[];
@@ -45,6 +47,22 @@ function asSeverity(v: unknown): Severity {
 
 function asStringArray(v: unknown): string[] {
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+}
+
+/**
+ * `fixAvailable` de npm audit tiene tres formas: objeto (hay que instalar algo distinto),
+ * `true` pelado (basta actualizar dentro del rango declarado) y `false` (no hay arreglo).
+ * Solo la primera trae versión objetivo; las otras dos devuelven null y se distinguen
+ * entre sí por el booleano `fixAvailable`.
+ */
+function asFixTarget(v: unknown): FixTarget | null {
+  const fix = asRecord(v);
+  if (!fix || typeof fix.name !== 'string' || typeof fix.version !== 'string') return null;
+  return {
+    package: fix.name,
+    version: fix.version,
+    isSemVerMajor: fix.isSemVerMajor === true,
+  };
 }
 
 /**
@@ -83,6 +101,7 @@ export function parseNpmAudit(auditJson: unknown): NpmVulnFinding[] {
       severity: asSeverity(v.severity),
       direct: v.isDirect === true,
       fixAvailable: Boolean(v.fixAvailable),
+      fix: asFixTarget(v.fixAvailable),
       range: typeof v.range === 'string' ? v.range : '',
       nodes: asStringArray(v.nodes),
       titles,
@@ -128,6 +147,7 @@ export function enrichFindings(auditJson: unknown, lockJson: unknown): Finding[]
       bucket,
       direct: v.direct,
       fixAvailable: v.fixAvailable,
+      fix: v.fix,
       explanation: vulnerabilityExplanation(bucket),
       advisory: { titles: v.titles, urls: v.urls, range: v.range },
     };

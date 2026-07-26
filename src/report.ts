@@ -38,12 +38,18 @@ export function buildReport(root: string, repos: RepoResult[], now: Date = new D
       unknownSeverity: allFindings.filter((f) => f.type === 'vulnerability' && !f.severity).length,
       abandonedPackages: allFindings.filter((f) => f.type === 'deprecated').length,
     },
-    // Normalizado: el JSON siempre trae secondaryEcosystems y unresolvedAdvisories,
-    // aunque vengan vacíos/en cero — contrato estable para El Repuesto.
+    // Normalizado: el JSON siempre trae secondaryEcosystems, unresolvedAdvisories y fix,
+    // aunque vengan vacíos/en cero/null — contrato estable para El Repuesto. Que `fix`
+    // esté SIEMPRE presente es lo que le permite distinguir "reporte viejo sin el campo"
+    // de "hallazgo sin versión objetivo".
     repos: repos.map((r) => ({
       ...r,
       secondaryEcosystems: r.secondaryEcosystems ?? [],
-      findings: r.findings.map((f) => ({ ...f, unresolvedAdvisories: f.unresolvedAdvisories ?? 0 })),
+      findings: r.findings.map((f) => ({
+        ...f,
+        unresolvedAdvisories: f.unresolvedAdvisories ?? 0,
+        fix: f.fix ?? null,
+      })),
     })),
   };
 }

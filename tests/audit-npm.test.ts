@@ -31,6 +31,21 @@ describe('parseNpmAudit', () => {
     expect(byName.axios.fixAvailable).toBe(true);
   });
 
+  it('conserva el objeto de fixAvailable como `fix`: qué instalar, qué versión y si rompe', () => {
+    // El booleano solo dice "hay arreglo". El objeto dice CUÁL — el dato que consume
+    // El Repuesto para la Ruta A. Sin esto, la versión objetivo se pierde.
+    expect(byName.axios.fix).toEqual({
+      package: 'axios',
+      version: '0.21.4',
+      isSemVerMajor: false,
+    });
+    expect(byName.minimist.fix).toEqual({
+      package: 'minimist',
+      version: '1.2.8',
+      isSemVerMajor: false,
+    });
+  });
+
   it('reúne títulos y urls desde los objetos de `via`, ignorando las entradas string', () => {
     expect(byName.lodash.titles.some((t: string) => /lodash/i.test(t))).toBe(true);
     expect(byName.lodash.urls.length).toBeGreaterThan(0);
@@ -53,6 +68,55 @@ describe('parseNpmAudit', () => {
     expect(() => parseNpmAudit(loadFixture('npm-audit-error.json'))).toThrow();
     expect(() => parseNpmAudit({})).toThrow();
     expect(() => parseNpmAudit(null)).toThrow();
+  });
+});
+
+describe('parseNpmAudit — los tres estados de fixAvailable', () => {
+  // Captura REAL de `npm audit --json` en JULIO/ALARMA (2026-07-26). Trae en una sola
+  // corrida la forma objeto (vitest y sus transitivos) y el booleano pelado (postcss),
+  // que es justo lo que el fixture anterior no cubría.
+  const findings = parseNpmAudit(loadFixture('npm-audit-tres-estados.json'));
+  const byName = Object.fromEntries(findings.map((f) => [f.package, f]));
+
+  it('objeto → fixAvailable true Y fix con la versión objetivo', () => {
+    expect(byName.vitest.fixAvailable).toBe(true);
+    expect(byName.vitest.fix).toEqual({
+      package: 'vitest',
+      version: '4.1.10',
+      isSemVerMajor: true,
+    });
+  });
+
+  it('booleano `true` pelado → fixAvailable true PERO fix null', () => {
+    // postcss real: 8.5.16 instalada, rango <=8.5.17, y el arreglo cabe dentro del rango
+    // ya declarado. npm no nombra versión porque no hace falta cambiar la declarada.
+    expect(byName.postcss.fixAvailable).toBe(true);
+    expect(byName.postcss.fix).toBeNull();
+  });
+
+  it('los dos estados NO se confunden entre sí', () => {
+    // Si `fix` se colapsara al booleano, estos dos casos serían idénticos y El Repuesto
+    // no podría distinguir "sube a esta versión" de "basta npm update".
+    expect(byName.vitest.fixAvailable).toBe(byName.postcss.fixAvailable);
+    expect(byName.vitest.fix).not.toBeNull();
+    expect(byName.postcss.fix).toBeNull();
+  });
+
+  it('un fixAvailable false deja fixAvailable false y fix null', () => {
+    // No hay ninguna vulnerabilidad con `false` en el corpus real de JULIO hoy, así que
+    // este caso se fija con la forma cruda mínima en vez de fabricar un fixture falso.
+    const [f] = parseNpmAudit({
+      vulnerabilities: { roto: { severity: 'high', fixAvailable: false, via: [], nodes: [] } },
+    });
+    expect(f.fixAvailable).toBe(false);
+    expect(f.fix).toBeNull();
+  });
+
+  it('un fixAvailable con forma inesperada no inventa un fix', () => {
+    const [f] = parseNpmAudit({
+      vulnerabilities: { raro: { severity: 'high', fixAvailable: { name: 'x' }, via: [], nodes: [] } },
+    });
+    expect(f.fix).toBeNull(); // le falta `version`: no se puede recetar a medias
   });
 });
 
@@ -171,5 +235,13 @@ describe('enrichFindings', () => {
     expect(f.advisory?.range).toBeTruthy();
     expect(typeof f.direct).toBe('boolean');
     expect(typeof f.fixAvailable).toBe('boolean');
+  });
+
+  it('propaga `fix` al Finding del contrato que lee El Repuesto', () => {
+    expect(byName.axios.fix).toEqual({
+      package: 'axios',
+      version: '0.21.4',
+      isSemVerMajor: false,
+    });
   });
 });

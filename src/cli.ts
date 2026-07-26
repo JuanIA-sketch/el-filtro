@@ -17,7 +17,7 @@ const program = new Command();
 program
   .name('el-filtro')
   .description('🔎 Escanea tus repos npm/pip y te dice, en lenguaje simple, qué dependencias arreglar ya')
-  .version('0.1.0')
+  .version('0.2.0')
   .option('--path <ruta>', 'carpeta raíz a escanear', '.')
   .option('--json', 'salida JSON máquina-legible, sin colores ni progreso')
   .option('--no-write', 'no escribir el reporte a disco')

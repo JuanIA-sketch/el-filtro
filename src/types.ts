@@ -15,6 +15,21 @@ export interface Advisory {
 }
 
 /**
+ * Arreglo concreto que `npm audit` señala para un hallazgo: QUÉ instalar y en qué versión.
+ *
+ * `package` puede NO ser el paquete vulnerable: en un fallo transitivo npm apunta al padre
+ * que hay que subir (p.ej. `esbuild` vulnerable → sube `vitest`). Recomendar el paquete
+ * vulnerable en ese caso sería mandar a alguien a tocar algo que ni está en su package.json.
+ *
+ * `isSemVerMajor` marca que el salto es de versión mayor, es decir, que puede romper.
+ */
+export interface FixTarget {
+  package: string;
+  version: string;
+  isSemVerMajor: boolean;
+}
+
+/**
  * Un hallazgo en el reporte. `type` reserva espacio para 'deprecated' (Etapa 3)
  * sin romper el esquema; en Etapa 1 solo se emiten 'vulnerability'. `severity` es
  * null para hallazgos sin severidad (deprecated).
@@ -27,6 +42,18 @@ export interface Finding {
   bucket: Bucket;
   direct: boolean;
   fixAvailable: boolean;
+  /**
+   * El arreglo concreto, cuando npm lo nombra. `fixAvailable` tiene TRES estados y este
+   * campo es el que los separa:
+   *   - `fixAvailable: true`  + `fix: {...}` → hay que instalar algo distinto de lo declarado
+   *   - `fixAvailable: true`  + `fix: null`  → se arregla dentro del rango ya declarado
+   *                                            (npm no nombra versión porque no hace falta)
+   *   - `fixAvailable: false` + `fix: null`  → no hay versión segura publicada
+   * Colapsar los dos primeros perdería la versión objetivo; confundir los dos últimos diría
+   * "no hay arreglo" del caso más fácil de arreglar. Opcional en el tipo; `buildReport` lo
+   * normaliza a null para que el JSON siempre lo traiga.
+   */
+  fix?: FixTarget | null;
   explanation: string;
   advisory: Advisory | null;
   /**
